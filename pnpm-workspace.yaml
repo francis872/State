@@ -1,0 +1,9 @@
+module.exports = {
+  apps: [
+    'apps/frontend',
+    'apps/backend'
+  ],
+  packages: [
+    'packages/*'
+  ]
+};

@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Multi-tenancy ────────────────────────────────────────────────────────────
+
+model Organization {
+  id               String       @id @default(cuid())
+  name             String
+  slug             String       @unique
+  plan             PlanTier     @default(BASIC)
+  stripeCustomerId String?      @unique
+  stripeSubId      String?      @unique
+  users            User[]
+  contacts         Contact[]
+  deals            Deal[]
+  leads            Lead[]
+  messages         Message[]
+  properties       Property[]
+  activities       Activity[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+enum PlanTier {
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+// ─── Users ───────────────────────────────────────────────────────────────────
+
+model User {
+  id             String       @id @default(cuid())
+  email          String       @unique
+  password       String
+  name           String?
+  role           UserRole     @default(ASESOR)
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  contacts       Contact[]
+  deals          Deal[]
+  messages       Message[]
+  activities     Activity[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  GERENTE
+  ASESOR
+}
+
+// ─── Contacts ────────────────────────────────────────────────────────────────
+
+model Contact {
+  id             String        @id @default(cuid())
+  name           String
+  email          String?
+  phone          String?
+  channel        Channel       @default(MANUAL)
+  whatsappId     String?
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  organizationId String
+  user           User          @relation(fields: [userId], references: [id])
+  userId         String
+  interactions   Interaction[]
+  deals          Deal[]
+  leads          Lead[]
+  messages       Message[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+enum Channel {
+  WHATSAPP
+  INSTAGRAM
+  EMAIL
+  MANUAL
+}
+
+model Interaction {
+  id        String   @id @default(cuid())
+  type      String
+  note      String?
+  contact   Contact  @relation(fields: [contactId], references: [id])
+  contactId String
+  createdAt DateTime @default(now())
+}
+
+// ─── Leads ───────────────────────────────────────────────────────────────────
+
+model Lead {
+  id             String       @id @default(cuid())
+  score          Int          @default(0)
+  status         LeadStatus   @default(NEW)
+  project        String?
+  budget         Float?
+  notes          String?
+  urgency        String?
+  propertyType   String?
+  contact        Contact      @relation(fields: [contactId], references: [id])
+  contactId      String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  matches        LeadMatch[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  CLOSED_WON
+  CLOSED_LOST
+}
+
+// ─── Deals ───────────────────────────────────────────────────────────────────
+
+model Deal {
+  id             String       @id @default(cuid())
+  title          String
+  value          Float
+  stage          String
+  probability    Int
+  contact        Contact      @relation(fields: [contactId], references: [id])
+  contactId      String
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+// ─── Messaging / WhatsApp ────────────────────────────────────────────────────
+
+model Message {
+  id             String       @id @default(cuid())
+  body           String
+  direction      Direction    @default(INBOUND)
+  channel        Channel      @default(WHATSAPP)
+  waMessageId    String?      @unique
+  contact        Contact      @relation(fields: [contactId], references: [id])
+  contactId      String
+  user           User?        @relation(fields: [userId], references: [id])
+  userId         String?
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime     @default(now())
+}
+
+enum Direction {
+  INBOUND
+  OUTBOUND
+}
+
+// ─── Properties ───────────────────────────────────────────────────────────────
+
+model Property {
+  id             String         @id @default(cuid())
+  title          String
+  price          Float
+  location       String
+  type           PropertyType
+  status         PropertyStatus @default(AVAILABLE)
+  bedrooms       Int?
+  bathrooms      Int?
+  area           Float?
+  description    String?
+  images         String[]
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  organizationId String
+  matches        LeadMatch[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+enum PropertyType {
+  APARTAMENTO
+  CASA
+  OFICINA
+  LOCAL
+  LOTE
+  FINCA
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  RENTED
+}
+
+model LeadMatch {
+  id         String   @id @default(cuid())
+  lead       Lead     @relation(fields: [leadId], references: [id])
+  leadId     String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+  score      Float    @default(0)
+  createdAt  DateTime @default(now())
+
+  @@unique([leadId, propertyId])
+}
+
+// ─── Activity Feed ────────────────────────────────────────────────────────────
+
+model Activity {
+  id             String       @id @default(cuid())
+  type           ActivityType
+  description    String
+  entityId       String?
+  entityType     String?
+  user           User?        @relation(fields: [userId], references: [id])
+  userId         String?
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime     @default(now())
+}
+
+enum ActivityType {
+  LEAD_CREATED
+  LEAD_QUALIFIED
+  DEAL_CREATED
+  DEAL_MOVED
+  DEAL_CLOSED
+  MESSAGE_RECEIVED
+  CONTACT_CREATED
+  PROPERTY_ADDED
+  MATCH_FOUND
+}
