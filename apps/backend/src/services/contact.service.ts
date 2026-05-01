@@ -31,7 +31,7 @@ export const getContactById = async (organizationId: string, id: string) => {
 export const updateContact = async (organizationId: string, id: string, data: ContactData) => {
   const contact = await prisma.contact.findFirst({ where: { id, organizationId } });
   if (!contact) throw new Error('No autorizado o contacto no existe');
-  return prisma.contact.update({ where: { id }, data });
+  return prisma.contact.update({ where: { id }, data: data as any });
 };
 
 export const deleteContact = async (organizationId: string, id: string) => {

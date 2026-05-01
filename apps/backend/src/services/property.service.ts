@@ -41,7 +41,7 @@ export const getProperties = async (organizationId: string) => {
 export const updateProperty = async (organizationId: string, id: string, data: Partial<PropertyData>) => {
   const prop = await prisma.property.findFirst({ where: { id, organizationId } });
   if (!prop) throw new Error('Propiedad no encontrada');
-  return prisma.property.update({ where: { id }, data });
+  return prisma.property.update({ where: { id }, data: data as any });
 };
 
 export const deleteProperty = async (organizationId: string, id: string) => {

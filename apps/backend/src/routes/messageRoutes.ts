@@ -15,7 +15,7 @@ router.get('/:contactId', authenticate, requireTenant, async (req: Request, res:
   const organizationId = (req as any).organizationId;
 
   const messages = await prisma.message.findMany({
-    where: { contactId, organizationId },
+    where: { contactId: contactId as string, organizationId: organizationId as string },
     orderBy: { createdAt: 'asc' },
   });
   return res.json(messages);
