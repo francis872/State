@@ -1,26 +1,32 @@
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-});
+let _stripe: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) throw new Error('STRIPE_SECRET_KEY is not configured');
+    _stripe = new Stripe(key, { apiVersion: '2025-02-24.acacia' });
+  }
+  return _stripe;
+}
 
 const PRICE_IDS: Record<string, string> = {
-  BASIC:      process.env.STRIPE_BASIC_PRICE_ID!,
-  PRO:        process.env.STRIPE_PRO_PRICE_ID!,
-  ENTERPRISE: process.env.STRIPE_ENTERPRISE_PRICE_ID!,
+  BASIC:      process.env.STRIPE_BASIC_PRICE_ID ?? '',
+  PRO:        process.env.STRIPE_PRO_PRICE_ID ?? '',
+  ENTERPRISE: process.env.STRIPE_ENTERPRISE_PRICE_ID ?? '',
 };
 
 /**
  * Create or retrieve a Stripe Customer for the given organization.
  */
 export async function getOrCreateCustomer(orgId: string, email: string, name: string) {
-  const existing = await stripe.customers.search({
+  const existing = await getStripe().customers.search({
     query: `metadata['orgId']:'${orgId}'`,
     limit: 1,
   });
   if (existing.data.length > 0) return existing.data[0];
 
-  return stripe.customers.create({
+  return getStripe().customers.create({
     email,
     name,
     metadata: { orgId },
@@ -39,7 +45,7 @@ export async function createCheckoutSession(
   const priceId = PRICE_IDS[plan];
   if (!priceId) throw new Error(`Price ID not configured for plan: ${plan}`);
 
-  return stripe.checkout.sessions.create({
+  return getStripe().checkout.sessions.create({
     customer: customerId,
     payment_method_types: ['card'],
     line_items: [{ price: priceId, quantity: 1 }],
@@ -54,7 +60,7 @@ export async function createCheckoutSession(
  * Create a Stripe Billing Portal session (manage subscription).
  */
 export async function createPortalSession(customerId: string, returnUrl: string) {
-  return stripe.billingPortal.sessions.create({
+  return getStripe().billingPortal.sessions.create({
     customer: customerId,
     return_url: returnUrl,
   });
@@ -64,11 +70,11 @@ export async function createPortalSession(customerId: string, returnUrl: string)
  * Construct and verify a Stripe webhook event.
  */
 export function constructWebhookEvent(payload: Buffer, signature: string) {
-  return stripe.webhooks.constructEvent(
+  return getStripe().webhooks.constructEvent(
     payload,
     signature,
     process.env.STRIPE_WEBHOOK_SECRET!,
   );
 }
 
-export { stripe };
+export { getStripe as stripe };
