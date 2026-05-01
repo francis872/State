@@ -24,9 +24,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         />
       )}
 
+      {/* Spacer — reserves sidebar width on desktop so content never goes under it */}
+      <div className="hidden lg:block shrink-0" style={{ width: '256px' }} aria-hidden="true" />
+
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
+      <div className="flex-1 flex flex-col min-w-0">
         <Topbar onMenuToggle={() => setSidebarOpen(s => !s)} />
         <main className="flex-1 overflow-y-auto">
           {children}
