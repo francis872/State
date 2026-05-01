@@ -54,7 +54,6 @@ export default function PropertiesTable() {
         </tbody>
       </table>
       )}
-      </table>
     </div>
   );
 }

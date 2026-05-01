@@ -14,7 +14,7 @@ export async function getContacts(): Promise<Contact[]> {
   return data.contacts;
 }
 
-export async function createContact(contact: { name: string; email?: string; phone?: string; channel?: string }): Promise<Contact> {
+export async function createContact(contact: { name: string; email?: string; phone?: string; channel?: string; propertyType?: string; budget?: number; urgency?: string }): Promise<Contact> {
   const { data } = await api.post('/contacts', contact);
   return data.contact;
 }

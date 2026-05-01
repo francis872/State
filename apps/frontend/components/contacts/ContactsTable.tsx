@@ -56,7 +56,6 @@ export default function ContactsTable() {
         </tbody>
       </table>
       )}
-      </table>
     </div>
   );
 }

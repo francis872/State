@@ -7,6 +7,7 @@ const stages = ['lead', 'contacto', 'negociacion', 'cerrado'];
 
 export default function DealForm() {
   const [form, setForm] = useState({
+    title: '',
     value: '',
     probability: '',
     stage: '',
@@ -48,14 +49,15 @@ export default function DealForm() {
     setSuccess(false);
     try {
       await createDeal({
+        title: form.title,
         value: Number(form.value),
         probability: Number(form.probability),
         stage: form.stage,
         closeDate: form.closeDate,
-        contactId: Number(form.contactId),
+        contactId: form.contactId,
       });
       setSuccess(true);
-      setForm({ value: '', probability: '', stage: '', closeDate: '', contactId: '' });
+      setForm({ title: '', value: '', probability: '', stage: '', closeDate: '', contactId: '' });
       toast.success('Deal creado');
     } catch (err: any) {
       setError('Error al guardar el deal');

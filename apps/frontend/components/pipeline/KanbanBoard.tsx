@@ -7,12 +7,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import SkeletonCard from './SkeletonCard';
 
 type Deal = {
-  id: number;
+  id: string;
   title: string;
   value: number;
   probability: number;
   stage: string;
-  contactId?: number;
+  contactId?: string;
 };
 
 export default function KanbanBoard() {
@@ -42,7 +42,7 @@ export default function KanbanBoard() {
   }, []);
 
   // Drag & drop preparado (sin librería real, solo click)
-  const handleMove = async (dealId: number, newStage: string) => {
+  const handleMove = async (dealId: string, newStage: string) => {
     setMoving(true);
     try {
       await updateDeal(dealId, { stage: newStage });
@@ -64,7 +64,7 @@ export default function KanbanBoard() {
         value: Number(form.value),
         probability: Number(form.probability),
         stage: form.stage,
-        contactId: form.contactId ? Number(form.contactId) : undefined,
+        contactId: form.contactId || undefined,
       });
       setForm({ title: '', value: '', probability: '', stage: stages[0], contactId: '' });
       setShowForm(false);

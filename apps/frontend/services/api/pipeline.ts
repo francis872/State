@@ -6,7 +6,7 @@ export interface Deal {
   value: number;
   probability: number;
   stage: string;
-  contactId: string;
+  contactId?: string;
   closeDate?: string;
   contact?: { id: string; name: string; channel: string };
 }

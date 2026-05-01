@@ -3,18 +3,18 @@ import DealCard from './DealCard';
 import { motion } from 'framer-motion';
 
 type Deal = {
-  id: number;
+  id: string;
   title: string;
   value: number;
   probability: number;
   stage: string;
-  contactId?: number;
+  contactId?: string;
 };
 
 interface ColumnProps {
   stage: string;
   deals: Deal[];
-  onMove?: (dealId: number, newStage: string) => void;
+  onMove?: (dealId: string, newStage: string) => void;
   moving?: boolean;
   isDragOver?: boolean;
 }

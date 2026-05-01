@@ -4,18 +4,19 @@ import { getContacts, createContact } from '../../services/api/contacts';
 import { FiSearch, FiPlus, FiMail, FiPhone, FiUser, FiX, FiMoreVertical } from 'react-icons/fi';
 
 interface Contact {
-  id: number;
+  id: string;
   name: string;
-  email: string;
+  email?: string;
   phone?: string;
+  channel?: string;
 }
 
 const MOCK_FALLBACK: Contact[] = [
-  { id: 1, name: 'Carlos Mejía', email: 'carlos@email.com', phone: '+57 312 456 7890' },
-  { id: 2, name: 'María Torres', email: 'maria@email.com', phone: '+57 300 987 6543' },
-  { id: 3, name: 'Andrés Villa', email: 'andres@email.com', phone: '+57 315 234 5678' },
-  { id: 4, name: 'Laura Salazar', email: 'laura@email.com', phone: '+57 321 765 4321' },
-  { id: 5, name: 'Juan Restrepo', email: 'juan@email.com', phone: '+57 316 543 2109' },
+  { id: '1', name: 'Carlos Mejía', email: 'carlos@email.com', phone: '+57 312 456 7890' },
+  { id: '2', name: 'María Torres', email: 'maria@email.com', phone: '+57 300 987 6543' },
+  { id: '3', name: 'Andrés Villa', email: 'andres@email.com', phone: '+57 315 234 5678' },
+  { id: '4', name: 'Laura Salazar', email: 'laura@email.com', phone: '+57 321 765 4321' },
+  { id: '5', name: 'Juan Restrepo', email: 'juan@email.com', phone: '+57 316 543 2109' },
 ];
 
 function getInitials(name: string) {
@@ -55,7 +56,7 @@ export default function ContactsPage() {
 
   const filtered = contacts.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.email.toLowerCase().includes(search.toLowerCase()) ||
+    (c.email || '').toLowerCase().includes(search.toLowerCase()) ||
     (c.phone || '').includes(search)
   );
 
@@ -247,123 +248,6 @@ export default function ContactsPage() {
               </div>
             </form>
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface Contact {
-  id: number;
-  name: string;
-  email: string;
-  // Puedes agregar phone si el backend lo soporta
-  phone?: string;
-}
-
-export default function ContactsPage() {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '' });
-  const [creating, setCreating] = useState(false);
-
-  const fetchContacts = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getContacts();
-      setContacts(data);
-    } catch (err: any) {
-      setError('Error al cargar contactos');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchContacts();
-  }, []);
-
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCreating(true);
-    setError(null);
-    try {
-      await createContact(form);
-      setForm({ name: '', email: '' });
-      setShowForm(false);
-      fetchContacts();
-    } catch (err: any) {
-      setError('Error al crear contacto');
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-white">Contactos</h1>
-        <button
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl font-semibold shadow"
-          onClick={() => setShowForm((v) => !v)}
-        >
-          {showForm ? 'Cancelar' : 'Crear contacto'}
-        </button>
-      </div>
-      {showForm && (
-        <form onSubmit={handleCreate} className="mb-8 flex gap-4 bg-white/10 backdrop-blur rounded-2xl p-4 shadow">
-          <input
-            type="text"
-            placeholder="Nombre"
-            className="px-3 py-2 rounded-xl bg-white/20 text-white placeholder:text-white/50 outline-none"
-            value={form.name}
-            onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="px-3 py-2 rounded-xl bg-white/20 text-white placeholder:text-white/50 outline-none"
-            value={form.email}
-            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-            required
-          />
-          <button
-            type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-semibold shadow"
-            disabled={creating}
-          >
-            {creating ? 'Creando...' : 'Guardar'}
-          </button>
-        </form>
-      )}
-      {loading ? (
-        <div className="text-white/60">Cargando contactos...</div>
-      ) : error ? (
-        <div className="text-red-400 font-semibold">{error}</div>
-      ) : (
-        <div className="overflow-x-auto rounded-2xl shadow bg-white/10 backdrop-blur">
-          <table className="min-w-full text-white">
-            <thead>
-              <tr className="border-b border-white/10">
-                <th className="py-3 px-4 text-left">Nombre</th>
-                <th className="py-3 px-4 text-left">Email</th>
-                <th className="py-3 px-4 text-left">Teléfono</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contacts.map((c) => (
-                <tr key={c.id} className="border-b border-white/5 hover:bg-white/5 transition">
-                  <td className="py-2 px-4 font-medium">{c.name}</td>
-                  <td className="py-2 px-4">{c.email}</td>
-                  <td className="py-2 px-4">{c.phone || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       )}
     </div>

@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 interface DealCardProps {
-  id?: number;
+  id?: string;
   title: string;
   value: number;
   probability: number;
   currentStage?: string;
-  onMove?: (dealId: number, newStage: string) => void;
+  onMove?: (dealId: string, newStage: string) => void;
   moving?: boolean;
 }
 
