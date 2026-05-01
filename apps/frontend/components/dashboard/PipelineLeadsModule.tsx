@@ -94,7 +94,7 @@ export default function PipelineLeadsModule() {
       : `$${(v / 1_000_000).toFixed(0)}M`;
 
   return (
-    <div className="w-full min-h-screen bg-[#0f1117] p-6">
+    <div className="w-full min-h-screen bg-[#0f1117] p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto flex flex-col gap-6">
 
         {/* Header */}

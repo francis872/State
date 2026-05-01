@@ -77,8 +77,8 @@ export default function ContactsPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#0f1117] p-6">
-      <div className="max-w-6xl mx-auto flex flex-col gap-6">
+    <div className="w-full min-h-screen bg-[#0f1117] p-4 sm:p-6 lg:p-8">
+      <div className="max-w-6xl mx-auto flex flex-col gap-5 sm:gap-6">
 
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -88,9 +88,9 @@ export default function ContactsPage() {
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all"
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2.5 rounded-xl flex-shrink-0"
           >
-            <FiPlus size={16} /> Nuevo contacto
+            <FiPlus size={16} /> <span className="hidden sm:inline">Nuevo contacto</span><span className="sm:hidden">Nuevo</span>
           </button>
         </div>
 
@@ -113,6 +113,7 @@ export default function ContactsPage() {
 
         {/* Table */}
         <div className="bg-[#1a1d27] border border-white/5 rounded-2xl overflow-hidden">
+          <div className="overflow-x-auto">
           {loading ? (
             <div className="flex flex-col gap-3 p-6">
               {[...Array(5)].map((_, i) => (
@@ -176,6 +177,7 @@ export default function ContactsPage() {
               </tbody>
             </table>
           )}
+          </div>{/* /overflow-x-auto */}
           <div className="px-5 py-3 border-t border-white/5 text-xs text-slate-600">
             {filtered.length} de {contacts.length} contactos
           </div>

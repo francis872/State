@@ -24,7 +24,19 @@ const app = express();
 // Raw body for Stripe webhook (must be before json() middleware)
 app.use('/webhook/stripe', express.raw({ type: 'application/json' }));
 
-app.use(cors({ origin: process.env.APP_URL || 'http://localhost:3000', credentials: true }));
+const allowedOrigins = (process.env.CORS_ORIGIN || process.env.APP_URL || 'http://localhost:3000')
+  .split(',')
+  .map(o => o.trim());
+
+app.use(cors({
+  origin: (origin, cb) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.some(o => origin.startsWith(o))) return cb(null, true);
+    cb(new Error(`CORS not allowed for origin: ${origin}`));
+  },
+  credentials: true,
+}));
 app.use(json());
 
 // Rutas

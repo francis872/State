@@ -4,11 +4,13 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey_change_in_production';
 
-export const register = async (email: string, password: string, orgName?: string) => {
+export const register = async (email: string, password: string, name?: string, orgName?: string) => {
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new Error('El usuario ya existe');
 
-  const slug = (orgName || email.split('@')[0])
+  const displayName = name || email.split('@')[0];
+  const orgDisplay = orgName || `Inmobiliaria de ${displayName}`;
+  const slug = orgDisplay
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '')
@@ -18,14 +20,14 @@ export const register = async (email: string, password: string, orgName?: string
   const hashed = await bcrypt.hash(password, 12);
   const org = await prisma.organization.create({
     data: {
-      name: orgName || `Org de ${email.split('@')[0]}`,
+      name: orgDisplay,
       slug: `${slug}-${Date.now()}`,
       plan: 'BASIC',
       users: {
         create: {
           email,
           password: hashed,
-          name: orgName,
+          name: displayName,
           role: 'ADMIN',
         },
       },

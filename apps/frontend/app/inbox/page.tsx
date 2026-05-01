@@ -216,7 +216,7 @@ export default function InboxPage() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 flex flex-col gap-3">
           {active.messages.map(msg => (
             <div key={msg.id} className={`flex ${msg.from === 'asesor' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-xs lg:max-w-md xl:max-w-lg rounded-2xl px-4 py-2.5

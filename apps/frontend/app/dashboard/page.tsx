@@ -50,13 +50,13 @@ export default function DashboardPage() {
   ] : [];
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-[#0f1117] via-[#141824] to-[#0f1117] p-6">
-      <div className="max-w-7xl mx-auto flex flex-col gap-6">
+    <div className="w-full min-h-screen bg-gradient-to-br from-[#0f1117] via-[#141824] to-[#0f1117] p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto flex flex-col gap-5 sm:gap-6">
 
         {/* Header */}
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">
               Bienvenido{user?.name ? `, ${user.name}` : ''} 👋
             </h1>
             <p className="text-white/50 mt-1">

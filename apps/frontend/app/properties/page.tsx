@@ -61,7 +61,7 @@ export default function PropertiesPage() {
     .filter(p => p.title.toLowerCase().includes(search.toLowerCase()) || p.location.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-[#0f1117] via-[#141824] to-[#0f1117] p-6">
+    <div className="w-full min-h-screen bg-gradient-to-br from-[#0f1117] via-[#141824] to-[#0f1117] p-4 sm:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
