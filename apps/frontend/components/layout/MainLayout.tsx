@@ -8,7 +8,8 @@ const NO_LAYOUT_PATHS = ['/', '/login'];
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
 
   if (NO_LAYOUT_PATHS.includes(pathname)) {
     return <>{children}</>;
@@ -17,20 +18,31 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#0f1117] via-[#141824] to-[#0f1117] flex">
       {/* Mobile overlay */}
-      {sidebarOpen && (
+      {mobileSidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+          onClick={() => setMobileSidebarOpen(false)}
         />
       )}
 
-      {/* Spacer — reserves sidebar width on desktop so content never goes under it */}
-      <div className="hidden lg:block shrink-0" style={{ width: '256px' }} aria-hidden="true" />
+      {/* Spacer — reserves sidebar width on desktop only when sidebar is open */}
+      <div
+        className={desktopSidebarOpen ? 'hidden lg:block shrink-0' : 'hidden'}
+        style={{ width: '256px' }}
+        aria-hidden="true"
+      />
 
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar
+        mobileOpen={mobileSidebarOpen}
+        desktopOpen={desktopSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+      />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <Topbar onMenuToggle={() => setSidebarOpen(s => !s)} />
+        <Topbar
+          onMobileMenuToggle={() => setMobileSidebarOpen(s => !s)}
+          onDesktopMenuToggle={() => setDesktopSidebarOpen(s => !s)}
+        />
         <main className="flex-1 overflow-y-auto">
           {children}
         </main>

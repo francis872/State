@@ -16,11 +16,12 @@ const navItems = [
 ];
 
 interface SidebarProps {
-  open: boolean;
+  mobileOpen: boolean;
+  desktopOpen: boolean;
   onClose: () => void;
 }
 
-export default function Sidebar({ open, onClose }: SidebarProps) {
+export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -29,9 +30,10 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         'fixed left-0 top-0 h-full w-64 z-50',
         'bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl',
         'flex flex-col transition-transform duration-300 ease-in-out',
-        // Mobile: slide in/out. Desktop: always visible
-        open ? 'translate-x-0' : '-translate-x-full',
-        'lg:translate-x-0',
+        // Mobile: slide in/out based on mobileOpen
+        mobileOpen ? 'translate-x-0' : '-translate-x-full',
+        // Desktop: slide in/out based on desktopOpen
+        desktopOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full',
       ].join(' ')}
     >
       {/* Header */}

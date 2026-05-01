@@ -16,10 +16,11 @@ const PAGE_TITLES: Record<string, string> = {
 };
 
 interface TopbarProps {
-  onMenuToggle: () => void;
+  onMobileMenuToggle: () => void;
+  onDesktopMenuToggle: () => void;
 }
 
-export default function Topbar({ onMenuToggle }: TopbarProps) {
+export default function Topbar({ onMobileMenuToggle, onDesktopMenuToggle }: TopbarProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -36,12 +37,21 @@ export default function Topbar({ onMenuToggle }: TopbarProps) {
 
   return (
     <header className="sticky top-0 z-30 w-full h-16 flex items-center justify-between px-4 md:px-6 bg-[#0d0f1a]/80 backdrop-blur-xl border-b border-white/5 shadow-md gap-4">
-      {/* Left: hamburger (mobile) + page title */}
+      {/* Left: hamburger + page title */}
       <div className="flex items-center gap-3 min-w-0">
+        {/* Mobile hamburger */}
         <button
-          onClick={onMenuToggle}
+          onClick={onMobileMenuToggle}
           className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
           aria-label="Abrir menú"
+        >
+          <FiMenu size={20} />
+        </button>
+        {/* Desktop hamburger — toggles sidebar collapse */}
+        <button
+          onClick={onDesktopMenuToggle}
+          className="hidden lg:flex p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
+          aria-label="Colapsar menú"
         >
           <FiMenu size={20} />
         </button>
