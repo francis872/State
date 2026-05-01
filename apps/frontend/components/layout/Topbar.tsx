@@ -1,11 +1,33 @@
 'use client';
-import { FiUser, FiLogOut } from 'react-icons/fi';
+import { FiUser, FiLogOut, FiMenu } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
-export default function Topbar() {
+const PAGE_TITLES: Record<string, string> = {
+  '/dashboard':   'Dashboard',
+  '/analytics':   'Analytics',
+  '/pipeline':    'Pipeline',
+  '/contacts':    'Contactos',
+  '/properties':  'Propiedades',
+  '/ai-score':    'AI Score',
+  '/inbox':       'Inbox',
+  '/billing':     'Facturación',
+  '/settings':    'Ajustes',
+};
+
+interface TopbarProps {
+  onMenuToggle: () => void;
+}
+
+export default function Topbar({ onMenuToggle }: TopbarProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  const pageTitle = PAGE_TITLES[pathname] ?? 'STATE OS';
+  const initials = user?.name
+    ? user.name.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()
+    : '?';
 
   const handleLogout = () => {
     logout();
@@ -13,19 +35,34 @@ export default function Topbar() {
   };
 
   return (
-    <header className="sticky top-0 z-20 w-full h-20 flex items-center justify-between px-8 bg-white/10 backdrop-blur-xl border-b border-white/20 shadow-md">
-      <div />
-      <div className="flex items-center gap-4">
-        <span className="text-white font-medium">{user?.name || user?.email || 'Asesor'}</span>
-        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-blue-400 flex items-center justify-center shadow-lg">
-          <FiUser className="text-white text-xl" />
+    <header className="sticky top-0 z-30 w-full h-16 flex items-center justify-between px-4 md:px-6 bg-[#0d0f1a]/80 backdrop-blur-xl border-b border-white/5 shadow-md gap-4">
+      {/* Left: hamburger (mobile) + page title */}
+      <div className="flex items-center gap-3 min-w-0">
+        <button
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
+          aria-label="Abrir menú"
+        >
+          <FiMenu size={20} />
+        </button>
+        <h1 className="text-white font-semibold text-base truncate">{pageTitle}</h1>
+      </div>
+
+      {/* Right: user info + logout */}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="hidden sm:flex flex-col items-end mr-1">
+          <span className="text-white text-sm font-medium leading-tight">{user?.name || 'Asesor'}</span>
+          <span className="text-slate-500 text-xs leading-tight">{user?.org?.plan || 'BASIC'}</span>
+        </div>
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg text-white text-xs font-bold flex-shrink-0">
+          {initials}
         </div>
         <button
           onClick={handleLogout}
           title="Cerrar sesión"
-          className="p-2 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all"
+          className="p-2 rounded-xl text-slate-500 hover:text-white hover:bg-white/10"
         >
-          <FiLogOut size={18} />
+          <FiLogOut size={16} />
         </button>
       </div>
     </header>
