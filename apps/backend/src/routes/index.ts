@@ -12,6 +12,8 @@ import activityRoutes from './activityRoutes';
 
 const router = Router();
 
+router.get('/health', (_req, res) => res.json({ status: 'ok', app: 'STATE OS' }));
+
 router.use('/auth',       authRoutes);
 router.use('/contacts',   contactRoutes);
 router.use('/deals',      dealRoutes);

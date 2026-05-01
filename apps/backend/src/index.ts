@@ -10,12 +10,14 @@ import { errorHandler } from './middleware/error.middleware';
 // Config
 dotenv.config();
 
-// Sentry — must init before Express
-Sentry.init({
-  dsn: process.env.SENTRY_DSN_BACKEND,
-  environment: process.env.NODE_ENV || 'development',
-  tracesSampleRate: 1.0,
-});
+// Sentry v8 — init before everything
+if (process.env.SENTRY_DSN_BACKEND) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN_BACKEND,
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: 1.0,
+  });
+}
 
 const app = express();
 
@@ -25,14 +27,11 @@ app.use('/webhook/stripe', express.raw({ type: 'application/json' }));
 app.use(cors({ origin: process.env.APP_URL || 'http://localhost:3000', credentials: true }));
 app.use(json());
 
-// Sentry request handler
-app.use(Sentry.Handlers.requestHandler());
-
 // Rutas
 app.use(routes);
 
-// Sentry error handler (before custom errorHandler)
-app.use(Sentry.Handlers.errorHandler());
+// Sentry v8 error handler (before custom errorHandler)
+Sentry.setupExpressErrorHandler(app);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
