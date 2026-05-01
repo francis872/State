@@ -43,7 +43,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           transition: 'left 300ms ease-in-out',
           zIndex: 60,
         }}
-        className="hidden lg:flex items-center justify-center w-6 h-12 bg-indigo-600 hover:bg-indigo-500 text-white rounded-r-lg shadow-lg shadow-indigo-900/40"
+        className="sidebar-toggle items-center justify-center w-6 h-12 bg-indigo-600 hover:bg-indigo-500 text-white rounded-r-lg"
       >
         {desktopSidebarOpen
           ? <FiChevronLeft size={14} />

@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Sidebar toggle button — only visible on desktop */
+.sidebar-toggle {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .sidebar-toggle {
+    display: flex;
+  }
+}
+
 :root {
   --background: #0f1117;
   --foreground: #f8fafc;
