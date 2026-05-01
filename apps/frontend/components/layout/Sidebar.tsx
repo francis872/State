@@ -24,30 +24,21 @@ interface SidebarProps {
 export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
 
-  return (
-    <aside
-      className={[
-        'fixed left-0 top-0 h-full w-64 z-50',
-        'bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl',
-        'flex flex-col transition-transform duration-300 ease-in-out',
-        // Mobile: slide in/out based on mobileOpen
-        mobileOpen ? 'translate-x-0' : '-translate-x-full',
-        // Desktop: slide in/out based on desktopOpen
-        desktopOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full',
-      ].join(' ')}
-    >
+  // Shared content rendered in both desktop and mobile sidebars
+  const inner = (
+    <>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 shrink-0">
             <span className="text-white font-black text-xs">S</span>
           </div>
-          <span className="font-bold text-lg tracking-tight text-white">STATE OS</span>
+          <span className="font-bold text-lg tracking-tight text-white whitespace-nowrap">STATE OS</span>
         </div>
         {/* Close button - mobile only */}
         <button
           onClick={onClose}
-          className="lg:hidden p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10"
+          className="lg:hidden p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 shrink-0"
           aria-label="Cerrar menú"
         >
           <FiX size={18} />
@@ -64,27 +55,47 @@ export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarPro
               href={item.href}
               onClick={onClose}
               className={[
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap',
                 active
                   ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/20'
                   : 'text-slate-400 hover:bg-white/5 hover:text-white',
               ].join(' ')}
             >
-              <span className={active ? 'text-indigo-400' : 'text-slate-500 group-hover:text-white'}>
+              <span className={active ? 'text-indigo-400 shrink-0' : 'text-slate-500 shrink-0'}>
                 {item.icon}
               </span>
               {item.label}
-              {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />}
+              {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />}
             </Link>
           );
         })}
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t border-white/5">
-        <p className="text-xs text-slate-600">© {new Date().getFullYear()} STATE OS</p>
-        <p className="text-xs text-slate-700 mt-0.5">Medellín, Colombia</p>
+      <div className="px-5 py-4 border-t border-white/5 shrink-0">
+        <p className="text-xs text-slate-600 whitespace-nowrap">© {new Date().getFullYear()} STATE OS</p>
+        <p className="text-xs text-slate-700 mt-0.5 whitespace-nowrap">Medellín, Colombia</p>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* ── DESKTOP: in layout flow, collapses via width ── */}
+      <aside
+        className="hidden lg:flex flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl overflow-hidden transition-[width] duration-300 ease-in-out"
+        style={{ width: desktopOpen ? '256px' : '0px' }}
+      >
+        {inner}
+      </aside>
+
+      {/* ── MOBILE: fixed overlay, slides in/out ── */}
+      <aside
+        className="fixed left-0 top-0 h-full w-64 z-50 lg:hidden bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out"
+        style={{ transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)' }}
+      >
+        {inner}
+      </aside>
+    </>
   );
 }

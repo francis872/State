@@ -25,13 +25,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         />
       )}
 
-      {/* Spacer — reserves sidebar width on desktop only when sidebar is open */}
-      <div
-        className={desktopSidebarOpen ? 'hidden lg:block shrink-0' : 'hidden'}
-        style={{ width: '256px' }}
-        aria-hidden="true"
-      />
-
       <Sidebar
         mobileOpen={mobileSidebarOpen}
         desktopOpen={desktopSidebarOpen}
