@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { usePathname } from 'next/navigation';
@@ -30,6 +31,24 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         desktopOpen={desktopSidebarOpen}
         onClose={() => setMobileSidebarOpen(false)}
       />
+
+      {/* ── Floating arrow toggle — desktop only, sticks to sidebar edge ── */}
+      <button
+        onClick={() => setDesktopSidebarOpen(s => !s)}
+        aria-label={desktopSidebarOpen ? 'Colapsar menú' : 'Expandir menú'}
+        style={{
+          position: 'fixed',
+          top: '72px',
+          left: desktopSidebarOpen ? '248px' : '0px',
+          transition: 'left 300ms ease-in-out',
+          zIndex: 60,
+        }}
+        className="hidden lg:flex items-center justify-center w-6 h-12 bg-indigo-600 hover:bg-indigo-500 text-white rounded-r-lg shadow-lg shadow-indigo-900/40"
+      >
+        {desktopSidebarOpen
+          ? <FiChevronLeft size={14} />
+          : <FiChevronRight size={14} />}
+      </button>
 
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar
