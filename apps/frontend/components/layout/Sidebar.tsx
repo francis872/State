@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiGrid, FiUsers, FiTrello, FiMail, FiBarChart2, FiSettings, FiCreditCard, FiHome, FiZap, FiX } from 'react-icons/fi';
@@ -23,6 +24,14 @@ interface SidebarProps {
 
 export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   // Shared content rendered in both desktop and mobile sidebars
   const inner = (
@@ -36,13 +45,15 @@ export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarPro
           <span className="font-bold text-lg tracking-tight text-white whitespace-nowrap">STATE OS</span>
         </div>
         {/* Close button - mobile only */}
-        <button
-          onClick={onClose}
-          className="lg:hidden p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 shrink-0"
-          aria-label="Cerrar menú"
-        >
-          <FiX size={18} />
-        </button>
+        {!isDesktop && (
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 shrink-0"
+            aria-label="Cerrar menú"
+          >
+            <FiX size={18} />
+          </button>
+        )}
       </div>
 
       {/* Nav */}
@@ -83,8 +94,9 @@ export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarPro
     <>
       {/* ── DESKTOP: in layout flow, collapses via width ── */}
       <aside
-        className="hidden lg:flex flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl overflow-hidden"
+        className="flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl overflow-hidden"
         style={{
+          display: isDesktop ? 'flex' : 'none',
           width: desktopOpen ? '256px' : '0px',
           transition: 'width 300ms ease-in-out',
         }}
@@ -94,8 +106,9 @@ export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarPro
 
       {/* ── MOBILE: fixed overlay, slides in/out ── */}
       <aside
-        className="fixed left-0 top-0 h-full w-64 z-50 lg:hidden bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl flex flex-col"
+        className="fixed left-0 top-0 h-full w-64 z-50 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl flex flex-col"
         style={{
+          display: isDesktop ? 'none' : 'flex',
           transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 300ms ease-in-out',
         }}

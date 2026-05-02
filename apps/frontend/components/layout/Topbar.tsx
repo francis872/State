@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { FiUser, FiLogOut, FiMenu } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
@@ -24,6 +25,14 @@ export default function Topbar({ onMobileMenuToggle, onDesktopMenuToggle }: Topb
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const pageTitle = PAGE_TITLES[pathname] ?? 'STATE OS';
   const initials = user?.name
@@ -40,27 +49,31 @@ export default function Topbar({ onMobileMenuToggle, onDesktopMenuToggle }: Topb
       {/* Left: hamburger + page title */}
       <div className="flex items-center gap-3 min-w-0">
         {/* Mobile hamburger */}
-        <button
-          onClick={onMobileMenuToggle}
-          className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
-          aria-label="Abrir menú"
-        >
-          <FiMenu size={20} />
-        </button>
-        {/* Desktop hamburger — toggles sidebar collapse */}
-        <button
-          onClick={onDesktopMenuToggle}
-          className="hidden lg:flex p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
-          aria-label="Colapsar menú"
-        >
-          <FiMenu size={20} />
-        </button>
+        {!isDesktop && (
+          <button
+            onClick={onMobileMenuToggle}
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
+            aria-label="Abrir menú"
+          >
+            <FiMenu size={20} />
+          </button>
+        )}
+        {/* Desktop hamburger — secondary toggle (also in floating button) */}
+        {isDesktop && (
+          <button
+            onClick={onDesktopMenuToggle}
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
+            aria-label="Colapsar menú"
+          >
+            <FiMenu size={20} />
+          </button>
+        )}
         <h1 className="text-white font-semibold text-base truncate">{pageTitle}</h1>
       </div>
 
       {/* Right: user info + logout */}
       <div className="flex items-center gap-2 flex-shrink-0">
-        <div className="hidden sm:flex flex-col items-end mr-1">
+        <div className="flex-col items-end mr-1" style={{ display: isDesktop ? 'flex' : 'none' }}>
           <span className="text-white text-sm font-medium leading-tight">{user?.name || 'Asesor'}</span>
           <span className="text-slate-500 text-xs leading-tight">{user?.org?.plan || 'BASIC'}</span>
         </div>

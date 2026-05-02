@@ -27,9 +27,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#0f1117] via-[#141824] to-[#0f1117] flex">
       {/* Mobile overlay */}
-      {mobileSidebarOpen && (
+      {mobileSidebarOpen && !isDesktop && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
           onClick={() => setMobileSidebarOpen(false)}
         />
       )}
