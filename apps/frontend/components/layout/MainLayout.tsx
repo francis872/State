@@ -5,11 +5,10 @@ import Topbar from './Topbar';
 import { usePathname } from 'next/navigation';
 
 const NO_LAYOUT_PATHS = ['/', '/login'];
-const SIDEBAR_W = 256;
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('sb_open');
@@ -24,25 +23,41 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     });
   };
 
+  const close = () => {
+    setOpen(false);
+    localStorage.setItem('sb_open', '0');
+  };
+
   if (NO_LAYOUT_PATHS.includes(pathname)) return <>{children}</>;
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f1117 0%, #141824 50%, #0f1117 100%)' }}>
-      {/* Sidebar always fixed — slides in/out via transform */}
+
+      {/* Sidebar — posición fija, se oculta con transform cuando cerrada */}
       <Sidebar open={open} onToggle={toggle} />
 
-      {/* Content shifts right via marginLeft */}
+      {/* Overlay oscuro — SOLO cuando sidebar está abierta. Cierra al hacer click. */}
+      {open && (
+        <div
+          onClick={close}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.45)',
+            zIndex: 39,
+            cursor: 'pointer',
+          }}
+        />
+      )}
+
+      {/* Contenido principal — siempre ocupa el 100% del ancho */}
       <div style={{
-        marginLeft: `${open ? SIDEBAR_W : 0}px`,
-        transition: 'margin-left 300ms ease-in-out',
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
       }}>
         <Topbar onToggle={toggle} />
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
       </div>
     </div>
   );
