@@ -47,27 +47,27 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           aria-label={desktopSidebarOpen ? 'Colapsar menú' : 'Expandir menú'}
           style={{
             position: 'fixed',
-            top: '72px',
-            left: desktopSidebarOpen ? '248px' : '0px',
+            top: '80px',
+            left: desktopSidebarOpen ? '256px' : '0px',
             transition: 'left 300ms ease-in-out',
-            zIndex: 100,
+            zIndex: 9999,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '20px',
-            height: '52px',
+            width: '28px',
+            height: '64px',
             backgroundColor: '#4f46e5',
             color: '#ffffff',
             border: 'none',
-            borderRadius: '0 8px 8px 0',
+            borderRadius: '0 10px 10px 0',
             cursor: 'pointer',
-            boxShadow: '3px 0 12px rgba(79,70,229,0.5)',
+            boxShadow: '4px 0 16px rgba(79,70,229,0.7)',
             outline: 'none',
           }}
         >
           {desktopSidebarOpen
-            ? <FiChevronLeft size={13} />
-            : <FiChevronRight size={13} />}
+            ? <FiChevronLeft size={16} />
+            : <FiChevronRight size={16} />}
         </button>
       )}
 
