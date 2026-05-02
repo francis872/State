@@ -55,7 +55,7 @@ export default function Sidebar({ isOpen, isDesktop, onClose }: SidebarProps) {
             <Link
               key={item.href}
               href={item.href}
-              onClick={onClose}
+              onClick={!isDesktop ? onClose : undefined}
               className={[
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap',
                 active
@@ -85,10 +85,12 @@ export default function Sidebar({ isOpen, isDesktop, onClose }: SidebarProps) {
     <>
       {/* ── DESKTOP: in layout flow, collapses via width ── */}
       <aside
-        className="flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl overflow-hidden"
+        className="flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl"
         style={{
           display: isDesktop ? 'flex' : 'none',
           width: isOpen ? '256px' : '0px',
+          overflow: 'hidden',
+          pointerEvents: isOpen ? 'auto' : 'none',
           transition: 'width 300ms ease-in-out',
         }}
       >
@@ -97,9 +99,16 @@ export default function Sidebar({ isOpen, isDesktop, onClose }: SidebarProps) {
 
       {/* ── MOBILE: fixed overlay, slides in/out ── */}
       <aside
-        className="fixed left-0 top-0 h-full w-64 z-50 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl flex flex-col"
+        className="bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl"
         style={{
           display: isDesktop ? 'none' : 'flex',
+          flexDirection: 'column',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          height: '100%',
+          width: '256px',
+          zIndex: 50,
           transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 300ms ease-in-out',
         }}
