@@ -1,5 +1,4 @@
 'use client';
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiGrid, FiUsers, FiTrello, FiMail, FiBarChart2, FiSettings, FiCreditCard, FiHome, FiZap, FiX } from 'react-icons/fi';
@@ -17,21 +16,13 @@ const navItems = [
 ];
 
 interface SidebarProps {
-  mobileOpen: boolean;
-  desktopOpen: boolean;
+  isOpen: boolean;
+  isDesktop: boolean;
   onClose: () => void;
 }
 
-export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarProps) {
+export default function Sidebar({ isOpen, isDesktop, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
 
   // Shared content rendered in both desktop and mobile sidebars
   const inner = (
@@ -97,7 +88,7 @@ export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarPro
         className="flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl overflow-hidden"
         style={{
           display: isDesktop ? 'flex' : 'none',
-          width: desktopOpen ? '256px' : '0px',
+          width: isOpen ? '256px' : '0px',
           transition: 'width 300ms ease-in-out',
         }}
       >
@@ -109,7 +100,7 @@ export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarPro
         className="fixed left-0 top-0 h-full w-64 z-50 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl flex flex-col"
         style={{
           display: isDesktop ? 'none' : 'flex',
-          transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 300ms ease-in-out',
         }}
       >
