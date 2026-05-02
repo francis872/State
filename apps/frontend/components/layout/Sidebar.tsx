@@ -83,16 +83,22 @@ export default function Sidebar({ mobileOpen, desktopOpen, onClose }: SidebarPro
     <>
       {/* ── DESKTOP: in layout flow, collapses via width ── */}
       <aside
-        className="hidden lg:flex flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl overflow-hidden transition-[width] duration-300 ease-in-out"
-        style={{ width: desktopOpen ? '256px' : '0px' }}
+        className="hidden lg:flex flex-col shrink-0 bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl overflow-hidden"
+        style={{
+          width: desktopOpen ? '256px' : '0px',
+          transition: 'width 300ms ease-in-out',
+        }}
       >
         {inner}
       </aside>
 
       {/* ── MOBILE: fixed overlay, slides in/out ── */}
       <aside
-        className="fixed left-0 top-0 h-full w-64 z-50 lg:hidden bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out"
-        style={{ transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)' }}
+        className="fixed left-0 top-0 h-full w-64 z-50 lg:hidden bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl flex flex-col"
+        style={{
+          transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 300ms ease-in-out',
+        }}
       >
         {inner}
       </aside>
