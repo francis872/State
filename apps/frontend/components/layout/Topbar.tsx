@@ -36,32 +36,92 @@ export default function Topbar({ onToggle, isDesktop }: TopbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full h-16 flex items-center justify-between px-4 md:px-6 bg-[#0d0f1a]/80 backdrop-blur-xl border-b border-white/5 shadow-md gap-4">
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 30,
+      width: '100%',
+      height: '64px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 24px',
+      background: 'rgba(13,15,26,0.85)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(255,255,255,0.05)',
+      boxShadow: '0 2px 16px rgba(0,0,0,0.3)',
+      gap: '16px',
+      flexShrink: 0,
+    }}>
       {/* Left: hamburger + page title */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
         <button
           onClick={onToggle}
-          className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 flex-shrink-0"
-          aria-label="Menú"
+          aria-label="Toggle menú"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '36px',
+            height: '36px',
+            borderRadius: '10px',
+            border: 'none',
+            background: 'transparent',
+            color: '#94a3b8',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
         >
           <FiMenu size={20} />
         </button>
-        <h1 className="text-white font-semibold text-base truncate">{pageTitle}</h1>
+        <h1 style={{
+          color: '#f8fafc',
+          fontWeight: 600,
+          fontSize: '15px',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>{pageTitle}</h1>
       </div>
 
       {/* Right: user info + logout */}
-      <div className="flex items-center gap-2 flex-shrink-0">
-        <div className="flex-col items-end mr-1" style={{ display: isDesktop ? 'flex' : 'none' }}>
-          <span className="text-white text-sm font-medium leading-tight">{user?.name || 'Asesor'}</span>
-          <span className="text-slate-500 text-xs leading-tight">{user?.org?.plan || 'BASIC'}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        <div style={{ display: isDesktop ? 'flex' : 'none', flexDirection: 'column', alignItems: 'flex-end', marginRight: '4px' }}>
+          <span style={{ color: '#f8fafc', fontSize: '14px', fontWeight: 500, lineHeight: '1.2' }}>{user?.name || 'Asesor'}</span>
+          <span style={{ color: '#64748b', fontSize: '11px', lineHeight: '1.2' }}>{user?.org?.plan || 'BASIC'}</span>
         </div>
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg text-white text-xs font-bold flex-shrink-0">
+        <div style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #6366f1, #9333ea)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#fff',
+          fontSize: '11px',
+          fontWeight: 700,
+          flexShrink: 0,
+          boxShadow: '0 2px 8px rgba(99,102,241,0.4)',
+        }}>
           {initials}
         </div>
         <button
           onClick={handleLogout}
           title="Cerrar sesión"
-          className="p-2 rounded-xl text-slate-500 hover:text-white hover:bg-white/10"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
+            border: 'none',
+            background: 'transparent',
+            color: '#64748b',
+            cursor: 'pointer',
+          }}
         >
           <FiLogOut size={16} />
         </button>
