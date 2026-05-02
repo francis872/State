@@ -85,15 +85,26 @@ export default function Sidebar({ isOpen, isDesktop, onClose }: SidebarProps) {
     <>
       {/* ── DESKTOP: in layout flow, collapses via width ── */}
       <aside
-        className="sidebar-desktop bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl"
-        style={{ display: isDesktop ? 'flex' : 'none' }}
+        style={{
+          display: isDesktop ? 'flex' : 'none',
+          flexDirection: 'column',
+          flexShrink: 0,
+          width: isOpen ? '256px' : '0px',
+          overflow: 'hidden',
+          pointerEvents: isOpen ? 'auto' : 'none',
+          transition: 'width 300ms ease-in-out',
+          background: 'rgba(13,15,26,0.97)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderRight: '1px solid rgba(255,255,255,0.07)',
+          boxShadow: '4px 0 30px rgba(0,0,0,0.4)',
+        }}
       >
         {inner}
       </aside>
 
       {/* ── MOBILE: fixed overlay, slides in/out ── */}
       <aside
-        className="sidebar-mobile bg-[#0d0f1a]/95 backdrop-blur-xl border-r border-white/8 shadow-2xl"
         style={{
           display: isDesktop ? 'none' : 'flex',
           flexDirection: 'column',
@@ -103,6 +114,13 @@ export default function Sidebar({ isOpen, isDesktop, onClose }: SidebarProps) {
           height: '100%',
           width: '256px',
           zIndex: 50,
+          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 300ms ease-in-out',
+          background: 'rgba(13,15,26,0.97)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderRight: '1px solid rgba(255,255,255,0.07)',
+          boxShadow: '4px 0 30px rgba(0,0,0,0.4)',
         }}
       >
         {inner}

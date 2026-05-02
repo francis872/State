@@ -72,22 +72,23 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <button
         onClick={toggleSidebar}
         aria-label={sidebarOpen ? 'Colapsar menú' : 'Expandir menú'}
-        className="sidebar-toggle sidebar-toggle-btn"
         style={{
           display: isDesktop ? 'flex' : 'none',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'fixed',
-          top: '84px',
+          top: '72px',
+          left: sidebarOpen ? '244px' : '0px',
+          transition: 'left 300ms ease-in-out',
           zIndex: 9999,
-          width: '24px',
-          height: '56px',
+          width: '28px',
+          height: '64px',
           background: '#4f46e5',
           color: '#fff',
           border: 'none',
-          borderRadius: '0 10px 10px 0',
+          borderRadius: '0 12px 12px 0',
           cursor: 'pointer',
-          boxShadow: '4px 0 20px rgba(79,70,229,0.5)',
+          boxShadow: '4px 0 16px rgba(79,70,229,0.6)',
         }}
       >
         {sidebarOpen ? <FiChevronLeft size={15} /> : <FiChevronRight size={15} />}
