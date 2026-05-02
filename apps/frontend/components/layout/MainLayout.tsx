@@ -1,111 +1,50 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { usePathname } from 'next/navigation';
 
 const NO_LAYOUT_PATHS = ['/', '/login'];
-const STORAGE_KEY = 'stateos_sidebar_open';
 const SIDEBAR_W = 256;
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [open, setOpen] = useState(true);
 
-  // Detect desktop
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1024);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
+    const saved = localStorage.getItem('sb_open');
+    if (saved !== null) setOpen(saved === '1');
   }, []);
 
-  // Load persisted state
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved !== null) setSidebarOpen(saved === 'true');
-  }, []);
-
-  const toggleSidebar = useCallback(() => {
-    setSidebarOpen(prev => {
+  const toggle = () => {
+    setOpen(prev => {
       const next = !prev;
-      localStorage.setItem(STORAGE_KEY, String(next));
+      localStorage.setItem('sb_open', next ? '1' : '0');
       return next;
     });
-  }, []);
+  };
 
-  const closeSidebar = useCallback(() => {
-    setSidebarOpen(false);
-    localStorage.setItem(STORAGE_KEY, 'false');
-  }, []);
-
-  if (NO_LAYOUT_PATHS.includes(pathname)) {
-    return <>{children}</>;
-  }
+  if (NO_LAYOUT_PATHS.includes(pathname)) return <>{children}</>;
 
   return (
-    <div
-      data-sidebar={sidebarOpen ? 'open' : 'closed'}
-      style={{ display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #0f1117 0%, #141824 50%, #0f1117 100%)' }}
-    >
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f1117 0%, #141824 50%, #0f1117 100%)' }}>
+      {/* Sidebar always fixed — slides in/out via transform */}
+      <Sidebar open={open} onToggle={toggle} />
 
-      {/* Mobile backdrop */}
-      <div
-        onClick={closeSidebar}
-        style={{
-          display: (!isDesktop && sidebarOpen) ? 'block' : 'none',
-          position: 'fixed', inset: 0, zIndex: 40,
-          background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
-        }}
-      />
-
-      {/* Sidebar */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        isDesktop={isDesktop}
-        onClose={closeSidebar}
-      />
-
-      {/* Floating toggle button — desktop only */}
-      <button
-        onClick={toggleSidebar}
-        aria-label={sidebarOpen ? 'Colapsar menú' : 'Expandir menú'}
-        style={{
-          display: isDesktop ? 'flex' : 'none',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'fixed',
-          top: '72px',
-          left: sidebarOpen ? '244px' : '0px',
-          transition: 'left 300ms ease-in-out',
-          zIndex: 9999,
-          width: '28px',
-          height: '64px',
-          background: '#4f46e5',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '0 12px 12px 0',
-          cursor: 'pointer',
-          boxShadow: '4px 0 16px rgba(79,70,229,0.6)',
-        }}
-      >
-        {sidebarOpen ? <FiChevronLeft size={15} /> : <FiChevronRight size={15} />}
-      </button>
-
-      {/* Main content */}
+      {/* Content shifts right via marginLeft */}
       <div style={{
-        flex: 1,
+        marginLeft: `${open ? SIDEBAR_W : 0}px`,
+        transition: 'margin-left 300ms ease-in-out',
         display: 'flex',
         flexDirection: 'column',
-        minWidth: 0,
+        minHeight: '100vh',
       }}>
-        <Topbar onToggle={toggleSidebar} isDesktop={isDesktop} />
-        <main style={{ flex: 1, overflowY: 'auto' }}>
+        <Topbar onToggle={toggle} />
+        <main>
           {children}
         </main>
       </div>
     </div>
   );
 }
+

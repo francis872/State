@@ -1,130 +1,96 @@
-'use client';
+﻿'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiGrid, FiUsers, FiTrello, FiMail, FiBarChart2, FiSettings, FiCreditCard, FiHome, FiZap, FiX } from 'react-icons/fi';
+import { FiGrid, FiUsers, FiTrello, FiMail, FiBarChart2, FiSettings, FiCreditCard, FiHome, FiZap, FiChevronsLeft } from 'react-icons/fi';
 
 const navItems = [
-  { label: 'Dashboard',    href: '/dashboard',   icon: <FiGrid size={18} /> },
-  { label: 'Analytics',    href: '/analytics',   icon: <FiBarChart2 size={18} /> },
-  { label: 'Pipeline',     href: '/pipeline',    icon: <FiTrello size={18} /> },
-  { label: 'Contactos',    href: '/contacts',    icon: <FiUsers size={18} /> },
-  { label: 'Propiedades',  href: '/properties',  icon: <FiHome size={18} /> },
-  { label: 'AI Score',     href: '/ai-score',    icon: <FiZap size={18} /> },
-  { label: 'Inbox',        href: '/inbox',       icon: <FiMail size={18} /> },
-  { label: 'Facturación',  href: '/billing',     icon: <FiCreditCard size={18} /> },
-  { label: 'Ajustes',      href: '/settings',    icon: <FiSettings size={18} /> },
+  { label: 'Dashboard',   href: '/dashboard',  icon: <FiGrid size={18} /> },
+  { label: 'Analytics',   href: '/analytics',  icon: <FiBarChart2 size={18} /> },
+  { label: 'Pipeline',    href: '/pipeline',   icon: <FiTrello size={18} /> },
+  { label: 'Contactos',   href: '/contacts',   icon: <FiUsers size={18} /> },
+  { label: 'Propiedades', href: '/properties', icon: <FiHome size={18} /> },
+  { label: 'AI Score',    href: '/ai-score',   icon: <FiZap size={18} /> },
+  { label: 'Inbox',       href: '/inbox',      icon: <FiMail size={18} /> },
+  { label: 'Facturación', href: '/billing',    icon: <FiCreditCard size={18} /> },
+  { label: 'Ajustes',     href: '/settings',   icon: <FiSettings size={18} /> },
 ];
 
 interface SidebarProps {
-  isOpen: boolean;
-  isDesktop: boolean;
-  onClose: () => void;
+  open: boolean;
+  onToggle: () => void;
 }
 
-export default function Sidebar({ isOpen, isDesktop, onClose }: SidebarProps) {
+export default function Sidebar({ open, onToggle }: SidebarProps) {
   const pathname = usePathname();
 
-  // Shared content rendered in both desktop and mobile sidebars
-  const inner = (
-    <>
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 shrink-0">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 shrink-0">
-            <span className="text-white font-black text-xs">S</span>
+  return (
+    <aside style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      height: '100vh',
+      width: '256px',
+      zIndex: 40,
+      transform: open ? 'translateX(0)' : 'translateX(-256px)',
+      transition: 'transform 300ms ease-in-out',
+      background: 'rgba(13,15,26,0.98)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderRight: '1px solid rgba(255,255,255,0.07)',
+      boxShadow: '4px 0 30px rgba(0,0,0,0.4)',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px', borderBottom: '1px solid rgba(255,255,255,0.05)',
+        flexShrink: 0, height: '64px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            width: '28px', height: '28px', borderRadius: '8px',
+            background: 'linear-gradient(135deg, #6366f1, #9333ea)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <span style={{ color: '#fff', fontWeight: 900, fontSize: '11px' }}>S</span>
           </div>
-          <span className="font-bold text-lg tracking-tight text-white whitespace-nowrap">STATE OS</span>
+          <span style={{ color: '#fff', fontWeight: 700, fontSize: '16px' }}>STATE OS</span>
         </div>
-        {/* Close button - mobile only */}
-        {!isDesktop && (
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 shrink-0"
-            aria-label="Cerrar menú"
-          >
-            <FiX size={18} />
-          </button>
-        )}
+        <button onClick={onToggle} style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          width: '30px', height: '30px', borderRadius: '8px',
+          border: 'none', background: 'rgba(255,255,255,0.07)',
+          color: '#94a3b8', cursor: 'pointer', flexShrink: 0,
+        }}>
+          <FiChevronsLeft size={16} />
+        </button>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 flex flex-col gap-1 overflow-y-auto">
+      <nav style={{ flex: 1, padding: '10px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {navItems.map((item) => {
           const active = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={!isDesktop ? onClose : undefined}
-              className={[
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap',
-                active
-                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/20'
-                  : 'text-slate-400 hover:bg-white/5 hover:text-white',
-              ].join(' ')}
-            >
-              <span className={active ? 'text-indigo-400 shrink-0' : 'text-slate-500 shrink-0'}>
-                {item.icon}
-              </span>
+            <Link key={item.href} href={item.href} style={{
+              display: 'flex', alignItems: 'center', gap: '12px',
+              padding: '10px 12px', borderRadius: '10px', textDecoration: 'none',
+              fontSize: '14px', fontWeight: 500,
+              color: active ? '#a5b4fc' : '#94a3b8',
+              background: active ? 'rgba(99,102,241,0.12)' : 'transparent',
+              border: active ? '1px solid rgba(99,102,241,0.2)' : '1px solid transparent',
+              whiteSpace: 'nowrap',
+            }}>
+              <span style={{ color: active ? '#818cf8' : '#64748b', flexShrink: 0 }}>{item.icon}</span>
               {item.label}
-              {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />}
+              {active && <span style={{ marginLeft: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: '#818cf8', flexShrink: 0 }} />}
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="px-5 py-4 border-t border-white/5 shrink-0">
-        <p className="text-xs text-slate-600 whitespace-nowrap">© {new Date().getFullYear()} STATE OS</p>
-        <p className="text-xs text-slate-700 mt-0.5 whitespace-nowrap">Medellín, Colombia</p>
+      <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', flexShrink: 0 }}>
+        <p style={{ fontSize: '11px', color: '#334155' }}>© {new Date().getFullYear()} STATE OS</p>
       </div>
-    </>
-  );
-
-  return (
-    <>
-      {/* ── DESKTOP: in layout flow, collapses via width ── */}
-      <aside
-        style={{
-          display: isDesktop ? 'flex' : 'none',
-          flexDirection: 'column',
-          flexShrink: 0,
-          width: isOpen ? '256px' : '0px',
-          overflow: 'hidden',
-          pointerEvents: isOpen ? 'auto' : 'none',
-          transition: 'width 300ms ease-in-out',
-          background: 'rgba(13,15,26,0.97)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderRight: '1px solid rgba(255,255,255,0.07)',
-          boxShadow: '4px 0 30px rgba(0,0,0,0.4)',
-        }}
-      >
-        {inner}
-      </aside>
-
-      {/* ── MOBILE: fixed overlay, slides in/out ── */}
-      <aside
-        style={{
-          display: isDesktop ? 'none' : 'flex',
-          flexDirection: 'column',
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          height: '100%',
-          width: '256px',
-          zIndex: 50,
-          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 300ms ease-in-out',
-          background: 'rgba(13,15,26,0.97)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderRight: '1px solid rgba(255,255,255,0.07)',
-          boxShadow: '4px 0 30px rgba(0,0,0,0.4)',
-        }}
-      >
-        {inner}
-      </aside>
-    </>
+    </aside>
   );
 }

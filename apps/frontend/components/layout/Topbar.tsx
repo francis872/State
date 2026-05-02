@@ -17,10 +17,9 @@ const PAGE_TITLES: Record<string, string> = {
 
 interface TopbarProps {
   onToggle: () => void;
-  isDesktop: boolean;
 }
 
-export default function Topbar({ onToggle, isDesktop }: TopbarProps) {
+export default function Topbar({ onToggle }: TopbarProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -87,7 +86,7 @@ export default function Topbar({ onToggle, isDesktop }: TopbarProps) {
 
       {/* Right: user info + logout */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-        <div style={{ display: isDesktop ? 'flex' : 'none', flexDirection: 'column', alignItems: 'flex-end', marginRight: '4px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginRight: '4px' }}>
           <span style={{ color: '#f8fafc', fontSize: '14px', fontWeight: 500, lineHeight: '1.2' }}>{user?.name || 'Asesor'}</span>
           <span style={{ color: '#64748b', fontSize: '11px', lineHeight: '1.2' }}>{user?.org?.plan || 'BASIC'}</span>
         </div>
