@@ -58,6 +58,34 @@ a {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ── Sidebar state — driven by data-sidebar on root div, never purged ── */
+.sidebar-desktop {
+  overflow: hidden;
+  flex-shrink: 0;
+  flex-direction: column;
+  transition: width 300ms ease-in-out;
+}
+[data-sidebar="open"] .sidebar-desktop {
+  width: 256px;
+  pointer-events: auto;
+}
+[data-sidebar="closed"] .sidebar-desktop {
+  width: 0px;
+  pointer-events: none;
+}
+
+.sidebar-mobile {
+  transition: transform 300ms ease-in-out;
+}
+[data-sidebar="open"] .sidebar-mobile  { transform: translateX(0); }
+[data-sidebar="closed"] .sidebar-mobile { transform: translateX(-100%); }
+
+.sidebar-toggle-btn {
+  transition: left 300ms ease-in-out;
+}
+[data-sidebar="open"] .sidebar-toggle-btn  { left: 256px; }
+[data-sidebar="closed"] .sidebar-toggle-btn { left: 0px; }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.12);
   border-radius: 99px;

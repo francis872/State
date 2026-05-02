@@ -46,7 +46,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #0f1117 0%, #141824 50%, #0f1117 100%)' }}>
+    <div
+      data-sidebar={sidebarOpen ? 'open' : 'closed'}
+      style={{ display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #0f1117 0%, #141824 50%, #0f1117 100%)' }}
+    >
 
       {/* Mobile backdrop */}
       <div
@@ -69,14 +72,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <button
         onClick={toggleSidebar}
         aria-label={sidebarOpen ? 'Colapsar menú' : 'Expandir menú'}
+        className="sidebar-toggle sidebar-toggle-btn"
         style={{
           display: isDesktop ? 'flex' : 'none',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'fixed',
           top: '84px',
-          left: sidebarOpen ? `${SIDEBAR_W}px` : '0px',
-          transition: 'left 300ms ease-in-out',
           zIndex: 9999,
           width: '24px',
           height: '56px',
